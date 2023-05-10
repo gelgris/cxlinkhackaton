@@ -1,0 +1,92 @@
+data "aws_caller_identity" "current" {}
+
+#resource "aws_comprehend_document_classifier" "cl_ir_ml_hackathon_aws_comprehend_document_classifier" {
+#  name = format("${var.cl_ir_ml_hackathon_aws_comprehend_document_classifier}-%s",local.environment[terraform.workspace])
+#
+#  data_access_role_arn = aws_iam_role.cl_ir_ml_hackathon_aws_comprehend_role.arn
+#
+#  language_code = "en"
+  #model_kms_key_id
+  #volume_kms_key_id
+
+#  input_data_config {
+#    annotations {
+#      s3_uri =
+#      test_s3uri  =
+#    }
+#
+#    augmented_manifests {
+#      annotation_data_s3_uri 
+#      attribute_names 
+#      document_type
+#      s3_uri
+#      source_documents_s3_uri 
+#      split
+#    }
+#
+#    documents {
+#     input_format 
+#     s3_uri 
+#     test_s3uri
+#    }
+#
+#    s3_uri = format("s3://${var.cl_ir_ml_hackathon_aws_forecast_raw_bucket_name}-%s/${aws_s3_object.documents.id}",local.environment[terraform.workspace])
+#  }
+#
+#  depends_on = [
+#    aws_iam_role_policy.cl_ir_ml_hackathon_aws_comprehend_role_policy
+#  ]
+#  tags = local.tags
+#}
+
+
+resource "aws_comprehend_entity_recognizer" "cl_ir_ml_hackathon_aws_comprehend_entity_recognizer" {
+  name = format("${var.cl_ir_ml_hackathon_aws_comprehend_entity_recognizer_name}-%s",local.environment[terraform.workspace])
+
+  data_access_role_arn = aws_iam_role.cl_ir_ml_hackathon_aws_comprehend_role.arn
+  model_kms_key_id = "arn:aws:kms:${var.region}:${data.aws_caller_identity.current.account_id}:key/${var.cl_ir_comprehend_kms_key_id}"
+
+  language_code = "en"
+
+  input_data_config {
+    data_format   = "COMPREHEND_CSV" # or AUGMENTED_MANIFEST
+
+    entity_types {
+      type = "ENTITY_1"
+    }
+    entity_types {
+      type = "ENTITY_2"
+    }
+
+    documents {
+      input_format  = "ONE_DOC_PER_LINE" # ONE_DOC_PER_LINE or ONE_DOC_PER_FILE
+      s3_uri = format("s3://${var.cl_ir_ml_hackathon_aws_forecast_raw_bucket_name}-%s/${aws_s3_object.cl_ir_ml_hackathon_aws_comprehend_documents.id}",local.environment[terraform.workspace])
+    }
+
+    entity_list {
+      s3_uri = format("s3://${var.cl_ir_ml_hackathon_aws_forecast_raw_bucket_name}-%s/${aws_s3_object.cl_ir_ml_hackathon_aws_comprehend_entities.id}",local.environment[terraform.workspace])
+    }
+  }
+
+  depends_on = [
+    aws_iam_policy.cl_ir_ml_hackathon_aws_comprehend_role_policy
+  ]
+
+  tags = local.tags
+}
+
+
+resource "aws_s3_object" "cl_ir_ml_hackathon_aws_comprehend_documents" {
+  bucket = format("${var.cl_ir_ml_hackathon_aws_forecast_raw_bucket_name}-%s",local.environment[terraform.workspace])
+  key    = var.cl_ir_ml_hackathon_aws_comprehend_documents_key
+  source = "templates/comprehend/documents/documents.json"
+  kms_key_id = "arn:aws:kms:${var.region}:${data.aws_caller_identity.current.account_id}:key/${var.cl_ir_s3_kms_key_id}"
+}
+
+resource "aws_s3_object" "cl_ir_ml_hackathon_aws_comprehend_entities" {
+  bucket = format("${var.cl_ir_ml_hackathon_aws_forecast_raw_bucket_name}-%s",local.environment[terraform.workspace])
+  key    = var.cl_ir_ml_hackathon_aws_comprehend_entities_key
+  source = "templates/comprehend/entities/entities.json"
+  kms_key_id = "arn:aws:kms:${var.region}:${data.aws_caller_identity.current.account_id}:key/${var.cl_ir_s3_kms_key_id}"
+}
+

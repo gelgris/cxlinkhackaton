@@ -1,0 +1,31 @@
+resource "aws_route53_record" "cl_ir_ml_hackathon_app_domain_cert_validation_record" {
+  provider = aws.account-742189430206-eu-west-1
+  for_each = {
+    for dvo in aws_acm_certificate.cl_ir_ml_hackathon_app_domain_cert.domain_validation_options : dvo.domain_name => {
+      name   = dvo.resource_record_name
+      record = dvo.resource_record_value
+      type   = dvo.resource_record_type
+    }
+  }
+
+  allow_overwrite = true
+  name            = each.value.name
+  records         = [each.value.record]
+  ttl             = 60
+  type            = each.value.type
+  zone_id         = var.cl_ir_ml_hackathon_app_domain_zone_id
+}
+
+resource "aws_route53_record" "cl_ir_ml_hackathon_app_alias_record" {
+  provider = aws.account-742189430206-eu-west-1
+  zone_id = var.cl_ir_ml_hackathon_app_domain_zone_id
+  name    = aws_api_gateway_domain_name.cl_ir_ml_hackathon_app_custom_domain.domain_name
+  type    = "A"
+
+  alias {
+    name                   = aws_api_gateway_domain_name.cl_ir_ml_hackathon_app_custom_domain.regional_domain_name
+    zone_id                = aws_api_gateway_domain_name.cl_ir_ml_hackathon_app_custom_domain.regional_zone_id
+    evaluate_target_health = true
+  }
+  depends_on = [aws_api_gateway_domain_name.cl_ir_ml_hackathon_app_custom_domain]
+}

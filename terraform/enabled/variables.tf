@@ -1,0 +1,31 @@
+variable owner {}
+variable project {}
+variable region {}
+variable stage {}
+variable prefix {}
+variable product {}
+variable vpc_id {}
+variable public_subnet_id {}
+variable private_subnet_ids {}
+variable default_profile {}
+variable environment {}
+
+variable cl_ir_ecr_kms_key_id {}
+variable cl_ir_cloudwatch_kms_key_id {}
+variable cl_ir_lambda_kms_key_id {}
+variable cl_ir_s3_kms_key_id {}
+variable cl_ir_ebs_kms_key_id {}
+variable cl_ir_glue_kms_key_id {}
+variable cl_ir_comprehend_kms_key_id {}
+
+variable cl_ir_ecr_kms_key_alias {}
+variable cl_ir_cloudwatch_kms_key_alias {}
+variable cl_ir_lambda_kms_key_alias {}
+variable cl_ir_s3_kms_key_alias {}
+variable cl_ir_ebs_kms_key_alias {}
+variable cl_ir_glue_kms_key_alias {}
+variable cl_ir_sagemaker_kms_key_alias {}
+variable cl_ir_efs_kms_key_alias {}
+variable cl_ir_comprehend_kms_key_alias {}
+variable cl_ir_ml_hackathon_app_dev_domain_zone_id {}
+variable cl_ir_ml_hackathon_app_prod_domain_zone_id {}

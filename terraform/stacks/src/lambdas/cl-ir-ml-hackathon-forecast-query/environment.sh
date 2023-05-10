@@ -1,0 +1,15 @@
+#!/bin/bash
+
+export REGION="eu-west-1"
+export ENVIRONMENT_TAG="dev"
+export OWNER_TAG="cruz-roja"
+export STAGE_TAG="project"
+export PROJECT_TAG="cxlink-hackathon"
+export PREFIX="ct"
+export USE_CASE="work_force"
+export TEST_MODE="False"
+export CUSTOMER_ID="cruz-roja"
+export DATASET_GROUP_NAME="cl_ir_hackathon_erus_cruz_roja"
+export MODEL_DEPLOY_WAIT_TIME="2"
+export CODEPIPELINE_NAME="cl-ir-ml-hackathon-mlops"
+export RAW_BUCKET_NAME="cl-ir-ml-hackathon-aws-forecast-raw-bucket-cruz-roja"

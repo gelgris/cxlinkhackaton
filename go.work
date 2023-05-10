@@ -1,0 +1,9 @@
+go 1.18
+
+use (
+	./terraform/stacks/src/lambdas/cl-ir-hackathon-empathy-consolidation
+	./terraform/stacks/src/lambdas/cl-ir-hackathon-empathy-extract
+	./terraform/stacks/src/lambdas/cl-ir-hackathon-empathy-filter
+    ./terraform/stacks/src/lambdas/cl-ir-hackathon-empathy-audio
+    ./terraform/stacks/src/lambdas/cl-ir-hackathon-empathy-text
+)

@@ -1,0 +1,8 @@
+raw_bucket_name: 'cl-ir-ml-hackathon-aws-forecast-raw-bucket'
+curated_bucket_name: 'cl-ir-ml-hackathon-aws-forecast-curated-bucket'
+dataset_group_name: 'cl_ir_hackathon_erus'
+dataset_group_domain: 'WORK_FORCE'
+dataset_group_target_name: 'cl_ir_hackathon_erus_target'
+dataset_group_related_name: 'cl_ir_hackathon_erus_related'
+customer_id: 'cruz-roja'
+

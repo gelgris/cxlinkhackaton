@@ -1,0 +1,10 @@
+resource "aws_acm_certificate" "cl_ir_ml_hackathon_app_domain_cert" {
+  provider = aws.account-742189430206-eu-west-1
+  domain_name       = format("%s-${var.cl_ir_ml_hackathon_app_custom_subdomain_name}.${var.cl_ir_ml_hackathon_app_custom_domain_name}",local.environment[terraform.workspace])
+  validation_method = "DNS"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+

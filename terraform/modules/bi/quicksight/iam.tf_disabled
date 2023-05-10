@@ -1,0 +1,552 @@
+# We have a admin and author IAM users that are mapped to Quicksight users with a ADMIN and AUTHOR roles
+# Then, we have two IAM specific IAM policies assigned to each IAM user that provide access to quicksight, athena, etc resources
+
+resource "aws_iam_user" "cl_ir_ml_hackathon_empathy_quicksight_cruz_roja_iam_author_user" {
+  name = format("${var.cl_ir_ml_hackathon_empathy_quicksight_cruz_roja_iam_author_user_name}-%s",local.environment[terraform.workspace])
+  path = "/system/"
+
+  tags = local.tags
+}
+
+resource "aws_iam_user" "cl_ir_ml_hackathon_empathy_quicksight_cruz_roja_iam_admin_user" {
+  name = format("${var.cl_ir_ml_hackathon_empathy_quicksight_cruz_roja_iam_admin_user_name}-%s",local.environment[terraform.workspace])
+  path = "/system/"
+
+  tags = local.tags
+}
+
+# Ref: https://docs.aws.amazon.com/quicksight/latest/user/iam-policy-examples.html
+
+resource "aws_iam_policy" "cl_ir_ml_hackathon_empathy_quicksight_cruz_roja_iam_author_user_policy" {
+  name = format("${var.cl_ir_ml_hackathon_empathy_quicksight_cruz_roja_iam_author_user_policy_name}-%s",local.environment[terraform.workspace])
+  description = "Policiy for the CxLink AWS Forecast Service"
+  path = "/"
+  tags = local.tags
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+	{
+        "Sid" : "AllowQuicksight",
+        "Effect" : "Allow",
+        "Action" : [
+                "quicksight:*"
+        ],
+        "Resource" : [
+                      "*"
+         ]
+      },
+      {
+            "Effect": "Allow",
+            "Action": [
+                "athena:BatchGetQueryExecution",
+                "athena:CancelQueryExecution",
+                "athena:GetCatalogs",
+                "athena:GetExecutionEngine",
+                "athena:GetExecutionEngines",
+                "athena:GetNamespace",
+                "athena:GetNamespaces",
+                "athena:GetQueryExecution",
+                "athena:GetQueryExecutions",
+                "athena:GetQueryResults",
+                "athena:GetQueryResultsStream",
+                "athena:GetTable",
+                "athena:GetTables",
+                "athena:ListQueryExecutions",
+                "athena:RunQuery",
+                "athena:StartQueryExecution",
+                "athena:StopQueryExecution",
+                "athena:ListWorkGroups",
+                "athena:ListEngineVersions",
+                "athena:GetWorkGroup",
+                "athena:GetDataCatalog",
+                "athena:GetDatabase",
+                "athena:GetTableMetadata",
+                "athena:ListDataCatalogs",
+                "athena:ListDatabases",
+                "athena:ListTableMetadata",
+                "athena:*"
+            ],
+            "Resource": [
+                "*"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "glue:CreateDatabase",
+                "glue:DeleteDatabase",
+                "glue:GetDatabase",
+                "glue:GetDatabases",
+                "glue:UpdateDatabase",
+                "glue:CreateTable",
+                "glue:DeleteTable",
+                "glue:BatchDeleteTable",
+                "glue:UpdateTable",
+                "glue:GetTable",
+                "glue:GetTables",
+                "glue:BatchCreatePartition",
+                "glue:CreatePartition",
+                "glue:DeletePartition",
+                "glue:BatchDeletePartition",
+                "glue:UpdatePartition",
+                "glue:GetPartition",
+                "glue:GetPartitions",
+                "glue:BatchGetPartition",
+                "glue:*"
+            ],
+            "Resource": [
+                "*"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:GetBucketLocation",
+                "s3:GetObject",
+                "s3:ListBucket",
+                "s3:ListBucketMultipartUploads",
+                "s3:ListMultipartUploadParts",
+                "s3:AbortMultipartUpload",
+                "s3:CreateBucket",
+                "s3:PutObject",
+                "s3:PutBucketPublicAccessBlock"
+            ],
+            "Resource": [
+                "arn:aws:s3:::aws-athena-query-results-*"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "lakeformation:GetDataAccess"
+            ],
+            "Resource": [
+                "*"
+            ]
+        }
+     ]
+  })
+}
+
+
+resource "aws_iam_user_policy_attachment" "cl_ir_ml_hackathon_empathy_quicksight_cruz_roja_iam_author_user_policy_attachment" {
+  user       = aws_iam_user.cl_ir_ml_hackathon_empathy_quicksight_cruz_roja_iam_author_user.name
+  policy_arn = aws_iam_policy.cl_ir_ml_hackathon_empathy_quicksight_cruz_roja_iam_author_user_policy.arn
+}
+
+
+resource "aws_iam_policy" "cl_ir_ml_hackathon_empathy_quicksight_cruz_roja_iam_admin_user_policy" {
+  name = format("${var.cl_ir_ml_hackathon_empathy_quicksight_cruz_roja_iam_admin_user_policy_name}-%s",local.environment[terraform.workspace])
+  description = "Policiy for the CxLink AWS Forecast Service"
+  path = "/"
+  tags = local.tags
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+	{
+        "Sid" : "AllowQuicksight",
+        "Effect" : "Allow",
+        "Action" : [
+                "quicksight:*"
+        ],
+        "Resource" : [
+                      "*"
+         ]
+      },
+      {
+            "Effect": "Allow",
+            "Action": "iam:PassRole",
+            "Resource": "*",
+            "Condition": {
+                "StringEquals": {
+                    "iam:PassedToService": [
+                        "quicksight.amazonaws.com"
+                    ]
+                }
+            }
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "iam:AttachRolePolicy",
+                "iam:DetachRolePolicy",
+                "iam:ListAttachedRolePolicies",
+                "iam:GetPolicy",
+                "iam:CreatePolicyVersion",
+                "iam:DeletePolicyVersion",
+                "iam:GetPolicyVersion",
+                "iam:ListPolicyVersions",
+		"iam:DeletePolicyVersion",
+                "iam:ListAttachedRolePolicies",
+		"iam:GetRole",
+		"iam:GetPolicy",
+		"iam:DetachRolePolicy",
+                "iam:GetPolicyVersion",
+		"iam:ListPolicyVersions",
+                "iam:DeleteRole",
+                "iam:CreateRole",
+                "iam:GetRole",
+                "iam:ListRoles",
+                "iam:CreatePolicy",
+                "iam:ListEntitiesForPolicy",
+                "s3:ListAllMyBuckets",
+                "athena:ListDataCatalogs",
+                "athena:GetDataCatalog"
+            ],
+            "Resource": "*"
+         },
+       	 {
+            "Effect": "Allow",
+            "Action": [
+                "quicksight:ListGroups",
+                "quicksight:CreateGroup",
+                "quicksight:SearchGroups",
+                "quicksight:ListGroupMemberships",
+                "quicksight:CreateGroupMembership",
+                "quicksight:DeleteGroupMembership",
+                "quicksight:DescribeGroupMembership",
+                "quicksight:ListUsers"
+            ],
+            "Resource": "*"
+        },
+       	 {
+            "Effect": "Allow",
+            "Action": [
+		"athena:*"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "quicksight: DescribeAccountCustomization",
+                "quicksight: CreateAccountCustomization",
+                "quicksight: UpdateAccountCustomization",
+                "quicksight: DescribeEmailCustomizationTemplate",
+                "quicksight: CreateEmailCustomizationTemplate",
+                "quicksight: UpdateEmailCustomizationTemplate",
+                "ses: GetIdentityVerificationAttributes"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "quicksight:*CustomPermissions",
+		"quicksight:CreateCustomPermissions",
+                "quicksight:DescribeCustomPermissions",
+                "quicksight:ListCustomPermissions",
+                "quicksight:UpdateCustomPermissions",
+                "quicksight:DeleteCustomPermissions"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ds:AuthorizeApplication",
+                "ds:UnauthorizeApplication",
+	        "ds:CheckAlias",
+                "ds:CreateAlias",
+		"ds:DescribeDirectories",
+                "ds:DescribeTrusts",
+                "ds:DeleteDirectory",
+                "ds:CreateIdentityPoolDirectory",
+		"ds:DescribeTrusts",
+                "ds:DeleteDirectory",
+                "ds:CreateIdentityPoolDirectory",
+		"ds:UnauthorizeApplication",
+                "ds:DeleteDirectory",
+                "ds:DescribeDirectories",
+                "quicksight:DeleteNamespace",
+                "quicksight:CreateNamespace"
+            ],
+            "Resource": "*"
+      },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "secretsmanager:ListSecrets"
+            ],
+            "Resource": "*"
+      },
+      {
+            "Effect": "Allow",
+            "Action": [
+                "athena:BatchGetQueryExecution",
+                "athena:CancelQueryExecution",
+                "athena:GetCatalogs",
+                "athena:GetExecutionEngine",
+                "athena:GetExecutionEngines",
+                "athena:GetNamespace",
+                "athena:GetNamespaces",
+                "athena:GetQueryExecution",
+                "athena:GetQueryExecutions",
+                "athena:GetQueryResults",
+                "athena:GetQueryResultsStream",
+                "athena:GetTable",
+                "athena:GetTables",
+                "athena:ListQueryExecutions",
+                "athena:RunQuery",
+                "athena:StartQueryExecution",
+                "athena:StopQueryExecution",
+                "athena:ListWorkGroups",
+                "athena:ListEngineVersions",
+                "athena:GetWorkGroup",
+                "athena:GetDataCatalog",
+                "athena:GetDatabase",
+                "athena:GetTableMetadata",
+                "athena:ListDataCatalogs",
+                "athena:ListDatabases",
+                "athena:ListTableMetadata",
+		"athena:*"
+            ],
+            "Resource": [
+                "*"
+            ]
+        },
+	{
+        "Sid" : "AllowS3ReadWriteAccess",
+        "Effect" : "Allow",
+        "Action" : [
+                "s3:PutObject",
+                "s3:GetObjectAcl",
+                "s3:GetObject",
+                "s3:ListBucket",
+                "s3:DeleteObject",
+                "s3:PutObjectAcl",
+                "s3:GetObjectTagging"
+        ],
+        "Resource" : [
+               format("arn:aws:s3:::${var.cl_ir_ml_hackathon_aws_forecast_raw_bucket_name}-%s",local.environment[terraform.workspace]),
+               format("arn:aws:s3:::${var.cl_ir_ml_hackathon_aws_forecast_raw_bucket_name}-%s/*",local.environment[terraform.workspace]),
+               format("arn:aws:s3:::${var.cl_ir_ml_hackathon_aws_forecast_curated_bucket_name}-%s",local.environment[terraform.workspace]),
+               format("arn:aws:s3:::${var.cl_ir_ml_hackathon_aws_forecast_curated_bucket_name}-%s/*",local.environment[terraform.workspace])
+         ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "glue:CreateDatabase",
+                "glue:DeleteDatabase",
+                "glue:GetDatabase",
+                "glue:GetDatabases",
+                "glue:UpdateDatabase",
+                "glue:CreateTable",
+                "glue:DeleteTable",
+                "glue:BatchDeleteTable",
+                "glue:UpdateTable",
+                "glue:GetTable",
+                "glue:GetTables",
+                "glue:BatchCreatePartition",
+                "glue:CreatePartition",
+                "glue:DeletePartition",
+                "glue:BatchDeletePartition",
+                "glue:UpdatePartition",
+                "glue:GetPartition",
+                "glue:GetPartitions",
+                "glue:BatchGetPartition",
+                "glue:*"
+            ],
+            "Resource": [
+                "*"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:GetBucketLocation",
+                "s3:GetObject",
+                "s3:ListBucket",
+                "s3:ListBucketMultipartUploads",
+                "s3:ListMultipartUploadParts",
+                "s3:AbortMultipartUpload",
+                "s3:CreateBucket",
+                "s3:PutObject",
+                "s3:PutBucketPublicAccessBlock"
+            ],
+            "Resource": [
+                "arn:aws:s3:::aws-athena-query-results-*"
+            ]
+        },
+
+        {
+            "Effect": "Allow",
+            "Action": [
+                "lakeformation:GetDataAccess"
+            ],
+            "Resource": [
+                "*"
+            ]
+        }
+     ]
+  })
+}
+
+
+resource "aws_iam_user_policy_attachment" "cl_ir_ml_hackathon_empathy_quicksight_cruz_roja_iam_admin_user_policy_attachment" {
+  user       = aws_iam_user.cl_ir_ml_hackathon_empathy_quicksight_cruz_roja_iam_admin_user.name
+  policy_arn = aws_iam_policy.cl_ir_ml_hackathon_empathy_quicksight_cruz_roja_iam_admin_user_policy.arn
+}
+
+resource "aws_iam_user_policy_attachment" "cl_ir_ml_hackathon_empathy_quicksight_cruz_roja_iam_admin_user_AWSQuickSightIAMPolicy_policy_attachment" {
+  user       = aws_iam_user.cl_ir_ml_hackathon_empathy_quicksight_cruz_roja_iam_admin_user.name
+  policy_arn = "arn:aws:iam::585543526779:policy/service-role/AWSQuickSightIAMPolicy"
+}
+
+
+# Quicksight IAM Role
+
+resource "aws_iam_role" "cl_ir_ml_hackathon_empathy_quicksight_role" {
+  name = format("${var.cl_ir_ml_hackathon_empathy_quicksight_role_name}-%s",local.environment[terraform.workspace])
+  description = "CxLink Hackathon IAM Role"
+  path = "/"
+  tags = local.tags
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "quicksight.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": "CxLinkAWSQuicksightRoleAssume"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_policy" "cl_ir_ml_hackathon_empathy_quicksight_role_policy" {
+  name = format("${var.cl_ir_ml_hackathon_empathy_quicksight_role_policy_name}-%s",local.environment[terraform.workspace])
+  description = "Policiy for the CxLink Hackathon IAM Role"
+  path = "/"
+  tags = local.tags
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Sid" : "AllowKMSList",
+        "Effect" : "Allow",
+        "Action" : [
+                "kms:DescribeCustomKeyStores",
+                "kms:ListKeys",
+                "kms:ListAliases"
+
+        ],
+        "Resource" : [
+                "*"
+         ]
+      },
+      {
+        "Sid" : "AllowQuicksightAccess",
+        "Effect" : "Allow",
+        "Action" : [
+                "quicksight:*"
+
+        ],
+        "Resource" : [
+                "*"
+         ]
+      },
+      {
+            "Effect": "Allow",
+            "Action": "s3:ListAllMyBuckets",
+            "Resource": "arn:aws:s3:::*"
+        },
+        {
+            "Action": [
+                "s3:ListBucket"
+            ],
+            "Effect": "Allow",
+            "Resource": [
+                "*"
+            ]
+        },
+        {
+            "Action": [
+                "s3:GetObject",
+                "s3:GetObjectVersion"
+            ],
+            "Effect": "Allow",
+            "Resource": [
+                "*"
+            ]
+        },
+        {
+            "Action": [
+                "s3:ListBucketMultipartUploads",
+                "s3:GetBucketLocation"
+            ],
+            "Effect": "Allow",
+            "Resource": [
+                "*"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:PutObject",
+                "s3:AbortMultipartUpload",
+                "s3:ListMultipartUploadParts"
+            ],
+            "Resource": [
+                "*"
+            ]
+      },
+      {
+            "Effect": "Allow",
+            "Action": [
+                "ds:AuthorizeApplication",
+                "ds:UnauthorizeApplication",
+                "ds:DeleteDirectory",
+                "ds:CreateIdentityPoolDirectory",
+                "quicksight:CreateNamespace",
+                "ds:UnauthorizeApplication",
+                "ds:DeleteDirectory",
+                "ds:DescribeDirectories",
+                "quicksight:DeleteNamespace"
+            ],
+            "Resource": [
+                "*"
+             ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ses: GetIdentityVerificationAttributes"
+            ],
+            "Resource": [
+               "*"
+            ]
+        },
+        {
+        "Sid" : "AllowKMSAccess",
+        "Effect" : "Allow",
+        "Action" : [
+                "kms:Encrypt",
+                "kms:Decrypt",
+                "kms:ReEncrypt*",
+                "kms:GenerateDataKey*",
+                "kms:DescribeKey",
+                "kms:CreateGrant",
+                "kms:RevokeGrant",
+                "kms:RetireGrant",
+                "kms:ListGrants"
+        ],
+        "Resource" : [
+           "arn:aws:kms:${var.region}:${data.aws_caller_identity.current.account_id}:key/${var.cl_ir_s3_kms_key_id}"
+         ]
+      }
+     ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "cl_ir_ml_hackathon_empathy_quicksight_role_policy_attachment" {
+  role       = aws_iam_role.cl_ir_ml_hackathon_empathy_quicksight_role.name
+  policy_arn = aws_iam_policy.cl_ir_ml_hackathon_empathy_quicksight_role_policy.arn
+}
+

@@ -1,0 +1,70 @@
+<!-- Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+SPDX-License-Identifier: Apache-2.0
+ABOUT THIS NODE.JS EXAMPLE: This example works with the AWS SDK for JavaScript version 3 (v3),
+which is available at https://github.com/aws/aws-sdk-js-v3.
+
+Purpose:
+index.html is the front-end HTML code for a tutorial demonstrating how to stream speech using Amazon Transcribe.
+*/
+-->
+
+<!-- snippet-start:[transcribe.HTML.streaming.indexv3] -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset = "UTF-8">
+    <title>CxLink Empathy for Cruz Roja</title>
+    <link rel = "stylesheet" type = "text/css" href = "style.css">
+    <script type = "text/javascript" src = "./main.js"></script>
+</head>
+
+<body>
+<div id = "mainContainer">
+    <img src="logo-cruz-roja-espanola.jpg" alt="Cruz Roja Española">
+    <h1>CxLink Empathy for Cruz Roja</h1>
+    <select id="inputLanguageList">
+        <option value = "nan">Selecciona el idioma que vas a utilizar</option>
+        <option value = "zh-CN">Chinese (simplified)</option>
+        <option value = "en-AU">English (Australian)</option>
+        <option value = "en-GB">English (British)</option>
+        <option value = "en-US">English (US)</option>
+        <option value = "fr-FR">French</option>
+        <option value = "fr-CA">French (Canadian)</option>
+        <option value = "de-DE">German</option>
+        <option value = "it-IT">Italian</option>
+        <option value = "ja-JP">Japanese</option>
+        <option value = "ko-KR">Korean</option>
+        <option value = "pt-BR">Portugese (Brazilian)</option>
+        <option value = "es-US">Spanish (US)</option>
+        <option value = "es-SP">Spanish</option>
+    </select>
+
+    <div id = "recordButtonContainer">
+        <button id = "record" class = "recordInactive" onclick = "onRecordPress()">◉</button>
+    </div>
+    
+    <div id = "outputSection">
+        <div id = "form"><h2>Formulario</h2></div>
+        <form id="myForm">
+            <label for="nombre">Nombre:</label>
+            <input type="text" name="nombre" id="nombre"><br><br>
+            
+            <label for="origen">Origen:</label>
+            <input type="text" name="origen" id="origen"><br><br>
+            
+            <label for="id">DNI/Pasaporte:</label>
+            <input type="text" name="id" id="id"><br><br>
+            
+            <label for="transcription">Transcripción:</label>
+            <input type="text" name="transcription" id="transcription"><br><br>
+                 
+            <input type="submit" value="Validar">
+          </form>
+    </div>
+</div>
+
+<script type = "text/javascript" src = "./main.js"></script>
+</body>
+
+</html>
+<!-- snippet-end:[transcribe.HTML.streaming.indexv3] -->

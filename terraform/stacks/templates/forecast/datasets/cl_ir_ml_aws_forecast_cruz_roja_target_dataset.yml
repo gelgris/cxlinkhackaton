@@ -1,0 +1,6 @@
+dataset_name: 'cl_ir_hackathon_erus_target'
+dataset_type: 'TARGET_TIME_SERIES'
+dataset_domain: 'WORK_FORCE'
+data_frecuency: 'H'
+customer_id: 'cruz-roja'
+

@@ -1,0 +1,12 @@
+{
+    "fileLocations": [
+        {
+            "URIs": [
+                "https://cl-ir-ml-hackathon-aws-forecast-curated-bucket-cruz-roja-dev.s3.amazonaws.com/585543526779/eu-west-1/quicksight/users/cl-ir-hackathon-quicksight-user.csv"
+            ]
+        }
+    ],
+    "globalUploadSettings": {
+        "textqualifier": "\""
+    }
+}
